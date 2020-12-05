@@ -678,10 +678,14 @@ class PanelController {
   Future<void> closeAndResetToPostion(
       {double postion = 0, Duration duration = const Duration(
           milliseconds: 250)}) async {
-    final resetPosition = _panelState._sc.animateTo(
-      postion, duration: duration, curve: Curves.easeInOut,);
     final close = _panelState._close();
-    await Future.wait([resetPosition, close]);
+    if (_panelState._sc.positions.isNotEmpty) {
+      final resetPosition = _panelState._sc.animateTo(
+        postion, duration: duration, curve: Curves.easeInOut,);
+      await Future.wait([resetPosition, close]);
+    } else {
+      return close;
+    }
   }
 
   /// Opens the sliding panel fully
